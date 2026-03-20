@@ -83,17 +83,7 @@ Type `exit` to quit.
 
 ## Using Your Own Document
 
-You have two options to use a custom `data.txt`:
-
-### Option A — Bake it into the image
-Replace the contents of `data.txt` with your document, then rebuild:
-```bash
-docker build -t rag-app .
-docker run -it --rm --env-file .env rag-app
-```
-
-### Option B — Mount it at runtime (no rebuild needed)
-Keep your `data.txt` anywhere on your machine and point to it at runtime:
+Replace `data.txt` with any text file you want and mount it at runtime — no rebuild needed:
 
 **On Windows (PowerShell):**
 ```powershell
@@ -110,12 +100,5 @@ docker run -it --rm --env-file .env -v C:\path\to\your\data.txt:/app/data.txt ra
 docker run -it --rm --env-file .env -v $(pwd)/data.txt:/app/data.txt rag-app
 ```
 
-Use Option B if you change your document frequently — no rebuild required, just re-run the command.
-
 ---
 
-## Notes
-
-- The HuggingFace embedding model (~90MB) is downloaded on first run
-- Subsequent builds are fast due to Docker layer caching — pip install is skipped if `requirements.txt` hasn't changed
-- Never commit your `.env` file — use `.env.example` as a template
