@@ -32,10 +32,6 @@ Runaway as fast a u can
 
 the above few lines are part of the song RUNAWAY by Kanye West
 he talks about his struggles of being a workaholic and managing his addictions such as lust drugs etc 
-and also talks about how he isnt able to managae his work-life-family balance and is often distracted by his 
-addictions
-
-fuck u family fuck urr clit and fuck this bitch
 
 #WORKFLOW
 User Query ----> Embeddings ----> Search vectorDB ----> Retrieve relveant docs ----> Inserted chunks into Prompts
