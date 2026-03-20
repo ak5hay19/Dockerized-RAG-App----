@@ -1,3 +1,155 @@
+================================================================
+           DOCKERIZED RAG APP - COMPLETE PROJECT GUIDE
+================================================================
+
+----------------------------------------------------------------
+WHAT IS THIS PROJECT?
+----------------------------------------------------------------
+This is a RAG (Retrieval-Augmented Generation) chatbot that lets
+you ask questions about any text document and get accurate answers
+powered by an LLM (Large Language Model).
+
+Instead of the LLM guessing answers from its training data, it
+reads YOUR document and answers based only on that content.
+
+----------------------------------------------------------------
+TECH STACK
+----------------------------------------------------------------
+- LangChain        : Builds the RAG pipeline
+- Groq             : Hosts the LLM (llama-3.1-8b-instant)
+- FAISS            : Vector database for semantic search
+- HuggingFace      : Embedding model (all-MiniLM-L6-v2)
+- Docker           : Containerizes the entire app
+
+----------------------------------------------------------------
+HOW IT WORKS (STEP BY STEP)
+----------------------------------------------------------------
+1. data.txt is loaded into memory
+2. The text is split into smaller chunks (500 chars, 50 overlap)
+3. Each chunk is converted into embeddings (numbers that represent
+   meaning) using the HuggingFace model
+4. Embeddings are stored in a FAISS vector database
+5. When you type a query:
+      a. Your query is also converted to embeddings
+      b. FAISS finds the most similar chunks to your query
+      c. Those chunks are inserted into a prompt as context
+      d. The prompt + context is sent to Groq LLM
+      e. LLM returns an answer based only on that context
+
+WORKFLOW:
+User Query
+   --> Convert to Embeddings
+   --> Search FAISS VectorDB
+   --> Retrieve Relevant Chunks
+   --> Insert Chunks into Prompt
+   --> Send Prompt to Groq LLM
+   --> Get Response
+
+----------------------------------------------------------------
+PROJECT FILES
+----------------------------------------------------------------
+Rag.py              : Main application code
+data.txt            : Document the chatbot answers questions about
+requirements.txt    : All Python dependencies
+Dockerfile          : Instructions to build the Docker image
+.env                : Your API keys (never commit this)
+.env.example        : Dummy template showing required keys
+.gitignore          : Tells Git what files to ignore
+.dockerignore       : Tells Docker what files to ignore
+
+----------------------------------------------------------------
+SETTING UP (FIRST TIME ONLY)
+----------------------------------------------------------------
+1. Make sure Docker Desktop is installed and running
+
+2. Get a Groq API key from https://console.groq.com
+
+3. Create a .env file in C:\LangChain_project with this content:
+      GROQ_API_KEY=your_groq_api_key_here
+
+4. Open PowerShell and navigate to the project folder:
+      cd C:\LangChain_project
+
+5. Build the Docker image (takes ~15-20 mins first time):
+      docker build -t rag-app .
+
+   NOTE: This is slow only the first time. Docker caches all the
+   dependencies so future builds take just a few seconds.
+
+----------------------------------------------------------------
+RUNNING THE APP
+----------------------------------------------------------------
+Every time you want to use the app:
+
+   Step 1: Open PowerShell
+   Step 2: Navigate to project folder
+               cd C:\LangChain_project
+   Step 3: Run the container
+               docker run -it --rm --env-file .env rag-app
+
+You will see:
+   RAG app ready, Type 'exit' to quit
+   Query:
+
+Type your question and hit Enter.
+Type 'exit' to quit the app.
+
+----------------------------------------------------------------
+USING A DIFFERENT DOCUMENT
+----------------------------------------------------------------
+To query a different text file without rebuilding the image,
+use a volume mount to swap the document at runtime:
+
+   PowerShell (using current directory):
+   docker run -it --rm --env-file .env -v ${PWD}/data2.txt:/app/data.txt rag-app
+
+   Command Prompt (full path):
+   docker run -it --rm --env-file .env -v C:\LangChain_project\data2.txt:/app/data.txt rag-app
+
+The container always reads the file as /app/data.txt internally.
+You are just swapping what file gets mounted into that path.
+
+----------------------------------------------------------------
+WHEN TO REBUILD THE IMAGE
+----------------------------------------------------------------
+You need to run docker build -t rag-app . again if you:
+   - Changed Rag.py
+   - Changed data.txt (only if NOT using volume mount)
+   - Added a new package to requirements.txt
+
+You do NOT need to rebuild if you:
+   - Just want to run the app again
+   - Are using volume mount to swap data.txt
+   - Changed your .env file
+
+----------------------------------------------------------------
+COMMON COMMANDS
+----------------------------------------------------------------
+Build image:
+   docker build -t rag-app .
+
+Run app:
+   docker run -it --rm --env-file .env rag-app
+
+Run app with custom document:
+   docker run -it --rm --env-file .env -v ${PWD}/data2.txt:/app/data.txt rag-app
+
+Check built images:
+   docker images
+
+Check running containers:
+   docker ps
+
+Remove image (if you want to start fresh):
+   docker rmi rag-app
+
+----------------------------------------------------------------
+GITHUB REPO
+----------------------------------------------------------------
+https://github.com/ak5hay19/Dockerized-RAG-App----
+
+================================================================
+
 LangChain is an open-source framework designed to simplify the development of applications that use Large Language Models (LLMs). It offers tools to link different components, such as databases and external APIs. This allows developers to build AI systems that can reason, access real-time data, and remember past interactions. 
 
 Core Components
